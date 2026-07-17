@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, type DropEvent, type FileRejection } from "react-dropzone";
 import { Upload, FileText, X, Loader2, CheckCircle, AlertCircle, Zap } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { formatFileSize } from "@/lib/utils";
@@ -23,7 +23,7 @@ export function UploadZone() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const onDrop = useCallback((accepted: File[], rejected: { errors: { message: string }[] }[]) => {
+  const onDrop = useCallback((accepted: File[], rejected: FileRejection[], _event: DropEvent) => {
     setError(null);
     if (rejected.length > 0) {
       setError("Only PDF files under 50MB are supported.");
@@ -89,11 +89,9 @@ export function UploadZone() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Drop Zone */}
-      <motion.div
+      <div
         {...getRootProps()}
         className={`upload-zone ${isDragActive ? "drag-over" : ""}`}
-        whileHover={{ scale: 1.01 }}
-        animate={isDragActive ? { scale: 1.02 } : { scale: 1 }}
         style={{ cursor: isCompressing ? "not-allowed" : "pointer" }}
         role="button"
         aria-label="Upload PDF file"
@@ -161,7 +159,7 @@ export function UploadZone() {
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       {/* Error */}
       <AnimatePresence>
