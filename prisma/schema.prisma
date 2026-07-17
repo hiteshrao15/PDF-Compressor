@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model PdfHistory {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  fileName              String
+  originalSize          Int
+  compressedSize        Int
+  compressionPercentage Float
+  storageSaved          Int
+  uploadDate            DateTime @default(now())
+  downloadUrl           String
+  compressionLevel      String   @default("medium")
+  processingTime        Int      @default(0)
+
+  @@map("pdf_history")
+}
